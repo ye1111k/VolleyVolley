@@ -1,0 +1,82 @@
+create database volleyvolley;
+
+create table stadium (
+stadium_id int not null primary key, 
+name varchar(50) not null, 
+hometown varchar(50) not null
+);
+
+create table club (
+club_id int not null primary key, 
+stadium_id int not null, 
+club_name varchar(50) not null, 
+director varchar(50), 
+foreign key (stadium_id) references stadium(stadium_id)
+);
+
+create table player (
+id int not null auto_increment primary key,
+name varchar(50) not null, 
+club_id int not null, 
+birth date, 
+debut int, 
+nationality varchar(30), 
+position varchar(20), 
+uniform_number int, 
+is_captain int, 
+FOREIGN KEY (club_id) references club(club_id)
+);
+
+create table staff (
+name varchar(50) not null primary key, 
+club_id int not null, 
+profession varchar(20),
+foreign key (club_id) references club(club_id)
+);
+
+create table public_transport (
+name varchar(50) not null primary key, 
+stadium_id int not null, 
+vehicle int not null, 
+distance_stadium int not null,
+bus_number varchar(20),
+station_number varchar(20),
+foreign key (stadium_id) references stadium(stadium_id)
+);
+
+create table personal_info (
+user_id varchar(50) not null primary key, 
+password varchar(50) not null, 
+name varchar(50) not null
+);
+
+create table restaurant (
+name varchar(50) not null primary key, 
+main_dish varchar(50), 
+stadium int not null, 
+distance_stadium int,
+foreign key (stadium) references stadium(stadium_id)
+);
+
+create table game (
+id int not null auto_increment primary key, 
+stadium_id int not null, 
+schedule date not null, 
+club1 int not null, 
+club2 int not null, 
+winner int, 
+foreign key (stadium_id) references stadium(stadium_id),
+foreign key (club1) references club(club_id),
+foreign key (club2) references club(club_id),
+foreign key (winner) references club(club_id)
+);
+
+create table review (review_id int not null auto_increment primary key,
+user_id varchar(50) not null,
+stadium_id int not null,
+date date not null,
+content varchar(100) not null,
+star_num int not null,
+foreign key(user_id) references personal_info(user_id),
+foreign key(stadium_id) references stadium(stadium_id)
+);
