@@ -72,8 +72,7 @@
               </li>
             </ul>
           </div>
-
-          <a class="btn btn-warning" href="update.php"> Update Nickname </a>
+ 
           <a class="btn btn-warning" href="login.php"> Sign Out </a>
 
         </nav>
@@ -96,7 +95,7 @@
       <div>
         <div class="row grid">
         <?php
-          $mysqli = mysqli_connect("localhost","root","1234","volleyvolley");
+          $mysqli = mysqli_connect("localhost","team22","team22","team22");
           if (mysqli_connect_errno()) {
             printf("Connect failed: %s\n", mysqli_connect_error());
             exit();
