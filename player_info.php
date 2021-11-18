@@ -35,8 +35,8 @@
 <body class="sub_page">
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+//  print_r($_SESSION);
+//  echo $_SESSION['userid'];
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -72,9 +72,10 @@
               </li>
             </ul>
           </div>
-
-          <a class="btn btn-warning" href="update.php"> Update Nickname </a>
+ 
           <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>
@@ -98,18 +99,83 @@
           <div class="col-sm-12 col-lg-12">
             <div class="box">
               <div>
-                  <div class="img-box">
-                    <img src="images/player_image/1/1.jpg" alt="">
-                  </div>
-                  <div class="detail-box" style="text-align: center">
-                    <h5>Name</h5>
-                    <h5>club name</h5> <h5>captain</h5>
-                    <h5>position</h5>
-                    <h5>number</h5>
-                    <h5>birth</h5>
-                    <h5>dubut</h5>
-                    <h5>nationality</h5>
-                  </div>
+              <?php
+                    $mysqli = mysqli_connect("localhost","team22","team22","team22");
+                    if (mysqli_connect_errno()) {
+                      printf("Connect failed: %s\n",mysqli_connect_error());
+                      exit();
+                    }
+                    else {
+                      $sql="select * from player where id=" . $_REQUEST['id'];
+                      $res = mysqli_query($mysqli, $sql);
+                      if ($res) {
+                        while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
+                          $id = $newArray['id'];
+                          $name = $newArray['name'];
+                          $club_id = $newArray['club_id'];
+                          
+                          $is_captain = $newArray['is_captain'];
+                          $birth = $newArray['birth'];
+                          $debut = $newArray['debut'];
+                          $nationality = $newArray['nationality'];
+                          $position = $newArray['position'];
+                          $uniform_number = $newArray['uniform_number'];
+                          $source = "images/player_image/" . (string)$club_id . "/" . (string)$uniform_number . ".jpg";
+                        }
+                        echo "<div class=\"img-box\">";
+                          echo "<img src=$source alt=\"\">";
+                        echo "</div>";
+                        echo "<div class=\"detail-box\" style=\"text-align: center\">";
+                        echo "<h5>".$name."</h5>";
+                        //echo "<h5>".$club_id."</h5>";
+                        if($club_id == 1){
+                          $club = "gscal";
+                          echo "<h5>GS Caltex Seoul KIXX</h5>";
+                        }
+                        else if ($club_id == 2){
+                          $club = "ibk";
+                          echo "<h5>IBK Altos</h5>";
+                        }
+                        else if ($club_id == 3){
+                          $club = "kgc";
+                          echo "<h5>KGC Pro Volleyball Club</h5>";
+                        }
+                        else if ($club_id == 4){
+                          $club = "pepper";
+                          echo "<h5>AI Peppers</h5>";
+                        }
+                        else if ($club_id == 5){
+                          $club = "heungkuk";
+                          echo "<h5>Heungkuk Life Insurance Pink Spiders</h5>";
+                        }
+                        else if ($club_id == 6){
+                          $club = "kec";
+                          echo "<h5>Korea Expressway Corporation Hi-Pass</h5>";
+                        }
+                        else if ($club_id == 7){
+                          $club = "hdec";
+                          echo "<h5>HDEC Hillstate</h5>";
+                        }
+                        //echo "<h5>".$is_captain."</h5>";
+                        if($is_captain == 1){
+                          echo "<h5>CAPTAIN</h5>";
+                        }
+                        else{
+                          echo "<h5></h5>";
+                        }
+                        echo "<h5>".$birth."</h5>";
+                        echo "<h5> Debut : ".$debut."</h5>";
+                        echo "<h5> Nationality : ".$nationality."</h5>";
+                        echo "<h5> Position : ".$position."</h5>";
+                        echo "<h5> Uniform Number : ".$uniform_number."</h5>";
+                      }
+                      else {
+                        printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
+                      }
+                      mysqli_free_result($res);
+                      mysqli_close($mysqli);
+                    }
+                  ?>
               </div>
           </div>
         </div>
@@ -117,8 +183,6 @@
 
     </div>
   </section>
-
-  <!-- end game section -->
 
   <!-- end player section -->
 

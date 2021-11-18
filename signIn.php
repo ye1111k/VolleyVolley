@@ -1,4 +1,7 @@
 <?php
+
+    echo "<script>parent.document.form.reset()</script>";
+
     $userid=$_POST['uid']; //id 받아올 변수
     $userpw=$_POST['pwd']; //비밀번호 받아올 변수
     $userpw=md5($userpw);
@@ -23,5 +26,10 @@
                 location.replace("login.php");
                 </script>');
         }
+    }
+    else {
+        exit('<script>alert("Wrong ID. Please check your ID.");
+                location.replace("login.php");
+                </script>');
     }
 ?>

@@ -35,8 +35,12 @@
 <body class="sub_page">
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+
+  $conn = mysqli_connect("localhost","team22","team22","team22");
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n",mysqli_connect_error());
+    exit();
+  }
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -72,9 +76,10 @@
               </li>
             </ul>
           </div>
-
-          <a class="btn btn-warning" href="update.php"> Update Nickname </a>
-          <a class="btn btn-warning" href="signOUt.php"> Sign Out </a>
+ 
+          <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>
@@ -92,97 +97,104 @@
           Player Information
         </h2>
       </div>
-
       <ul class="filters_menu">
-        <li class="active" data-filter="*">All</li>
-        <li data-filter=".gScal">GS Caltex</li>
-        <li data-filter=".ibk">IBK</li>
-        <li data-filter=".kgc">KGC</li>
-        <li data-filter=".pepper">PEPPER</li>
-        <li data-filter=".heungkuk">Heungkuk</li>
-        <li data-filter=".kec">Korea Expressway</li>
-        <li data-filter=".hdec">HDEC</li>
+      <?php
+        $sql = "SELECT count(*) FROM player";
+        $result = mysqli_query($conn, $sql);
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li class=\"active\" data-filter=\"*\">All (".$count.")</li>";
+      
+        $sql = "SELECT club_id, count(*) FROM player GROUP BY club_id;";
+        $result = mysqli_query($conn, $sql);
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".gscal\">GS Caltex (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".ibk\">IBK (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".kgc\">KGC (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".pepper\">Pepper (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".heungkuk\">Heungkuk (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".kec\">Korea Expressway (".$count.")</li>";
+
+        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $count = $newArray['count(*)'];
+
+        echo "<li data-filter=\".hdec\">HDEC (".$count.")</li>";
+        
+      ?>
       </ul>
 
       <div class="filters-content">
         <div class="row grid">
-          <form name="frm" action="player_info.php" method="POST">
-            <div class="col-sm-6 col-lg-4 all ibk">
-              <div class="box">
-                <div>
-                  <div class="img-box">
-                    <img src="images/player_image/1/1.jpg" alt="">
-                  </div>
-                  <div class="detail-box">
-                    <h5>Name</h5>
-                    <h5>club name</h5> <h5>captain</h5>
-                    <br>
-                    <div class="options">
-                      <input type="submit" value="more details" class="btn btn-warning" onclick="javascript:document.frm.submit();">
-                      <br>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-<!--지우기 동적 할당 한 번만 필요-->
-          <div class="col-sm-6 col-lg-4 all pepper">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/player_image/1/1.jpg" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>Name</h5>
-                  <h5>club name</h5> <h5>captain</h5>
-                  <br>
-                  <div class="options">
-                    <input type="submit" value="more details" class="btn btn-warning">
-                    <br>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <?php
+          $sql = "SELECT * FROM player";
+          $result = mysqli_query($conn, $sql);
 
-          <div class="col-sm-6 col-lg-4 all gScal">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/player_image/1/1.jpg" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>Name</h5>
-                  <h5>club name</h5> <h5>captain</h5>
-                  <br>
-                  <div class="options">
-                    <input type="submit" value="more details" class="btn btn-warning">
-                    <br>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-lg-4 all kec">
-            <div class="box">
-              <div>
-                <div class="img-box">
-                  <img src="images/player_image/1/1.jpg" alt="">
-                </div>
-                <div class="detail-box">
-                  <h5>Name</h5>
-                  <h5>club name</h5> <h5>captain</h5>
-                  <br>
-                  <div class="options">
-                    <input type="submit" value="more details" class="btn btn-warning">
-                    <br>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          while($newArray = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+            $id = $newArray['id'];
+            $name = $newArray['name'];
+            $club_id = $newArray['club_id'];
+            $is_captain = $newArray['is_captain'];
+            $uniform_number = $newArray['uniform_number'];
+            
+            $sql = "SELECT club_name FROM club WHERE club_id=".$club_id;
+            $res = mysqli_query($conn, $sql);
+            $newArr = mysqli_fetch_array($res, MYSQLI_ASSOC);
+            $club_name = $newArr['club_name'];
+            
+            if($club_id==1) echo "<div class=\"col-sm-6 col-lg-4 all gscal\">";
+            else if($club_id==2) echo "<div class=\"col-sm-6 col-lg-4 all ibk\">";
+            else if($club_id==3) echo "<div class=\"col-sm-6 col-lg-4 all kgc\">";
+            else if($club_id==4) echo "<div class=\"col-sm-6 col-lg-4 all pepper\">";
+            else if($club_id==5) echo "<div class=\"col-sm-6 col-lg-4 all heungkuk\">";
+            else if($club_id==6) echo "<div class=\"col-sm-6 col-lg-4 all kec\">";
+            else if($club_id==7) echo "<div class=\"col-sm-6 col-lg-4 all hdec\">";
+            echo "<form name=\"frm\" action=\"player_info.php\" method=\"POST\">";
+              echo "<div class=\"box\">";
+                echo "<div>";
+                  echo "<div class=\"img-box\">";
+                    echo "<img src=\"images/player_image/".$club_id."/".$uniform_number.".jpg\" alt=\"\">";
+                  echo "</div>";
+                echo "<div class=\"detail-box\">";
+                  echo "<h5>".$name."</h5>";
+                  echo "<h6>".$club_name."</h6>";
+                  if($is_captain==1) echo "<h5>CAPTAIN</h5>"; 
+                  else echo "<h5><br></h5>";
+                  echo "<div class=\"options\">";
+                    echo "<input type=\"hidden\" name=\"id\" value=\"$id\">";
+                    echo "<input type=\"submit\" value=\"more details\" class=\"btn btn-warning\">";
+                    echo "<br>";
+                  echo "</div>";
+                echo "</div>";
+              echo "</div>";
+            echo "</div>";
+            echo "</form>";
+          echo "</div>";
+        }
+        ?>
 
         </div>
       </div>

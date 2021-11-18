@@ -39,6 +39,12 @@
 <body class="sub_page">
 <?php
   session_start();
+
+  $mysqli = mysqli_connect("localhost","team22","team22","team22");
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n",mysqli_connect_error());
+    exit();
+  }
   //echo $_REQUEST['id'];
 ?>
   <div class="hero_area">
@@ -76,6 +82,8 @@
           </div>
 
           <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>
@@ -100,12 +108,7 @@
             <div class="box">
               <div>
                   <?php
-                    $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                    if (mysqli_connect_errno()) {
-                      printf("Connect failed: %s\n",mysqli_connect_error());
-                      exit();
-                    }
-                    else {
+                    
                       $sql="select * from stadium where stadium_id=" . $_REQUEST['id'];
                       $res = mysqli_query($mysqli, $sql);
                       if ($res) {
@@ -126,8 +129,7 @@
                         printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
                       }
                       mysqli_free_result($res);
-                      mysqli_close($mysqli);
-                    }
+                      
                   ?>
                   </div>
               </div>
@@ -138,15 +140,17 @@
                 <h4>&emsp; Public Transport</h3>
                     <div class="wrapper">
                       <?php
-                        $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                        if (mysqli_connect_errno()) {
-                          printf("Connect failed: %s\n",mysqli_connect_error());
-                          exit();
-                        }
-                        else {
+                        
                           $sql="select * from public_transport where stadium_id=" . $_REQUEST['id'];
                           $res = mysqli_query($mysqli, $sql);
                           if ($res) {
+                            $sql2 = "select min(distance_stadium) from public_transport where stadium_id=" . $_REQUEST['id'];
+                            $res2 = mysqli_query($mysqli, $sql2);
+
+                            while($min_distance = mysqli_fetch_array($res2, MYSQLI_ASSOC)){
+                              $min_value = $min_distance['min(distance_stadium)'];
+                            }
+                            
                             $num = 0;
                             $array=["one", "two", "three"];
                             while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
@@ -163,22 +167,25 @@
                                 $vehicle_name="subway";
                               }
 
-                              echo "<div class=".$array[$num].">";
+                              if ($distance_stadium == $min_value) {
+                                echo "<div style=\"color:yellow\" class=".$array[$num].">";
+                              }
+                              else {
+                                echo "<div class=".$array[$num].">";
+                              }
                                 echo "<h6>".$vehicle_name."</h6>";
                                 echo "<h6>".$number."</h6>";
                                 echo "<h6>".$name."</h6>";
                                 echo "<h6>".$distance_stadium." meters away</h6>";
                               echo "</div>";
                               $num = $num + 1;
-
                             }
                           }
                           else {
                             printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
                           }
                           mysqli_free_result($res);
-                          mysqli_close($mysqli);
-                        }
+                          
                       ?>
                     </div>
             </div>
@@ -189,12 +196,7 @@
                 <h4>&emsp; Restaurant</h3>
                     <div class="wrapper2">
                       <?php
-                          $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                          if (mysqli_connect_errno()) {
-                            printf("Connect failed: %s\n",mysqli_connect_error());
-                            exit();
-                          }
-                          else {
+                          
                             $sql="select * from restaurant where stadium=" . $_REQUEST['id'];
                             $res = mysqli_query($mysqli, $sql);
                             if ($res) {
@@ -217,8 +219,7 @@
                               printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
                             }
                             mysqli_free_result($res);
-                            mysqli_close($mysqli);
-                          }
+                            
                         ?>
 
                     </div>
@@ -229,12 +230,7 @@
             <div>
               <h4>&emsp; stadium review </h3>
               <?php
-                $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                if (mysqli_connect_errno()) {
-                  printf("Connect failed: %s\n",mysqli_connect_error());
-                  exit();
-                }
-                else {
+                
                   $sql="select avg(star_num) from review where stadium_id=" . $_REQUEST['id'];
                   $res = mysqli_query($mysqli, $sql);
                   if ($res) {
@@ -247,11 +243,9 @@
                     printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
                   }
                   mysqli_free_result($res);
-                  mysqli_close($mysqli);
-                }
               ?>
               
-              <form action="./review.php" method="POST">
+              <form action="./review.php" method="POST" onsubmit="return checkSubmit()">
                 <div class="write">
                   <span class="star">
                     ★★★★★
@@ -268,11 +262,7 @@
 
               <?php
                   $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                  if (mysqli_connect_errno()) {
-                    printf("Connect failed: %s\n",mysqli_connect_error());
-                    exit();
-                  }
-                  else {
+                  
                     $sql="select * from review where stadium_id=" . $_REQUEST['id'];
                     $res = mysqli_query($mysqli, $sql);
                     if ($res) {
@@ -285,13 +275,11 @@
                         echo "<div class=\"review_list\">";
                           echo "<table width=\"100%\">";
                             echo "<colgroup>";
-                              echo "<col width=\"10%\"/>";
-                              echo "<col width=\"10%\"/>";
+                              echo "<col width=\"20%\"/>";
                               echo "<col width=\"70%\"/>";
                               echo "<col width=\"10%\"/>";
                             echo "</colgroup>";
                             echo "<tr>";
-                              echo "<td>".$id."</td>";
                               echo "<td>".$name."</td>";
                               echo "<td>".$date."</td>";
                               echo "<td style=\"float:right;\">★".$star."</td>";
@@ -308,7 +296,7 @@
                     }
                     mysqli_free_result($res);
                     mysqli_close($mysqli);
-                  }
+                  
               ?>
             </div>
         </div>
@@ -366,7 +354,6 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
-
 </body>
 
 </html>

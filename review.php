@@ -22,7 +22,6 @@
         }
         $res = mysqli_query($mysqli, $sql);
         if ($res === TRUE) {
-            echo "A record has been inserted.";
         } 
         else {
             printf("Could not insert record: %s\n",mysqli_error($mysqli));

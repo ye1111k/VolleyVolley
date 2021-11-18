@@ -35,8 +35,8 @@
 <body class="sub_page">
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+//  print_r($_SESSION);
+//  echo $_SESSION['userid'];
 
   $club_id = $_REQUEST['id'];
 
@@ -82,8 +82,9 @@
             </ul>
           </div>
 
-          <a class="btn btn-warning" href="update.php"> Update Nickname </a>
-          <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          <a class="btn btn-warning" href="login.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>

@@ -35,8 +35,8 @@
 <body class="sub_page">
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+//  print_r($_SESSION);
+//  echo $_SESSION['userid'];
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -74,6 +74,8 @@
           </div>
  
           <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>

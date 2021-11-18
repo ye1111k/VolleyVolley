@@ -56,7 +56,7 @@
     </header>
     <!-- end header section -->
   </div>
-
+<div>
   <!-- signup section -->
   <section class="book_section layout_padding">
     <div class="bg-box">
@@ -90,70 +90,132 @@
           </div>
         </div>
         <div class="col-md-6">
-              <!-- slider section -->
-            <section class="slider_section ">
-                <div id="customCarousel1" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                    <div class="container ">
-                        <div class="row">
-                        <div class="col-md-7 col-lg-6 ">
-                            <div class="detail-box">
-                            <h1>
-                                Today's Match
-                            </h1>
-                            <p>
-                                team1 vs team2
-                            </p>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="carousel-item ">
-                    <div class="container ">
-                        <div class="row">
-                        <div class="col-md-7 col-lg-6 ">
-                            <div class="detail-box">
-                            <h1>
-                                Today's Team
-                            </h1>
-                            <p>
-                                team1
-                            </p>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="carousel-item">
-                    <div class="container ">
-                        <div class="row">
-                        <div class="col-md-7 col-lg-6 ">
-                            <div class="detail-box">
-                            <h1>
-                                Today's Player
-                            </h1>
-                            <p>
-                                player1
-                            </p>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
+    <!-- slider section -->
+    <section class="slider_section ">
+      <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 col-lg-6 ">
+                  <div class="detail-box">
+                    <h1>
+                      Today's Match
+                    </h1>
+                    <?php
+                      $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+
+                      if (mysqli_connect_errno()) {
+                        printf("Connect failed: %s\n", mysqli_connect_error());
+                        exit();
+                      }
+                    
+                      $today=date("Y-m-d");
+
+                      $sql = "SELECT * FROM game WHERE date(schedule) = date(now());";
+                      $result=mysqli_fetch_array(mysqli_query($conn, $sql));
+
+                      if($result==FALSE){
+                        echo "<p>There's no match today.</p>";
+                      }
+                      else{
+                        $club1_id = $result['club1'];
+                        $club2_id = $result['club2'];
+                        $schedule = $result['schedule'];
+                        $stadium_id = $result['stadium_id'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club1_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club1 = $newArray['club_name'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club2_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club2 = $newArray['club_name'];
+
+                        echo "<p> <h3><b>".$club1."</b></h3> vs <h3><b>".$club2." </b></h3></p>";
+                      }
+                    ?>
+                  </div>
                 </div>
-                <div class="container">
-                    <ol class="carousel-indicators">
-                    <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
-                    <li data-target="#customCarousel1" data-slide-to="1"></li>
-                    <li data-target="#customCarousel1" data-slide-to="2"></li>
-                    </ol>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item ">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 col-lg-6 ">
+                  <div class="detail-box">
+                    <h1>
+                      Today's Team
+                    </h1>
+                    <p>
+                    <?php
+                      $today_number = (idate("Y") + idate("m") + idate("d"));
+                      $player_number = $today_number%7;
+                      
+                      $sql = "SELECT * FROM club WHERE club_id=".$player_number;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                      $club_name = $newArray['club_name'];
+
+                      echo "<h3><b>".$club_name."</b></h3>";
+                    ?>
+                    </p>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="container ">
+              <div class="row">
+                <div class="col-md-7 col-lg-6 ">
+                  <div class="detail-box">
+                    <h1>
+                      Today's Player
+                    </h1>
+                    <p>
+                    <?php
+                      $player_number = $today_number%125;
+                      
+                      $sql = "SELECT * FROM player WHERE id=".$player_number;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                      $name = $newArray['name'];
+                      $club_id = $newArray['club_id'];
+                      $uniform_number = $newArray['uniform_number'];
+                      $position = $newArray['position'];
+                      
+                      $sql = "SELECT club_name FROM club WHERE club_id=".$club_id;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                      $club_name = $newArray['club_name'];
+
+                      echo "<h3><b>".$name."</b></h3>(".$club_name.", ".$position.", ".$uniform_number.")";
+                    ?>
+                    </p>
+                  </div>
                 </div>
-        
-            </section>
-            <!-- end slider section -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <ol class="carousel-indicators">
+            <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+            <li data-target="#customCarousel1" data-slide-to="1"></li>
+            <li data-target="#customCarousel1" data-slide-to="2"></li>
+          </ol>
+        </div>
+      </div>
+
+    </section>
+    <!-- end slider section -->
         </div>
       </div>
     </div>
@@ -185,11 +247,11 @@
     var userId = document.getElementById("uid");
     var userPw = document.getElementById("pwd");
     if(userId.value.length == 0){
-      alert('아이디를 입력해 주세요.');
+      alert('please enter your ID');
       return false;
     }
     if(userPw.value.length == 0){
-      alert('비밀번호를 입력해 주세요.');
+      alert('please enter your password');
       return false;
     }
     return true;
@@ -199,8 +261,7 @@
       //document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
     //}
     
-    
-    </script>
+  </script>
 </body>
 
 </html>

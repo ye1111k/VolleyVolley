@@ -46,8 +46,15 @@
 <body>
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+//  print_r($_SESSION);
+//  echo $_SESSION['userid'];
+
+  $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+  }
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -83,8 +90,9 @@
               </li>
             </ul>
 
-            <a class="btn btn-warning" href="update.php"> Update Nickname </a>
-            <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          <a class="btn btn-warning" href="login.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
             
           </div>
         </nav>
@@ -103,14 +111,48 @@
                     <h1>
                       Today's Match
                     </h1>
-                    <p>
-                      team1 vs team2
-                    </p>
-                    <div class="btn-box">
-                      <a href="#target1" class="btn1">
-                        show detail
-                      </a>
-                    </div>
+                    <?php
+                      $today=date("Y-m-d");
+
+                      echo $today;
+
+                      $sql = "SELECT * FROM game WHERE date(schedule) = date(now());";
+                      $result=mysqli_fetch_array(mysqli_query($conn, $sql));
+
+                      if($result==FALSE){
+                        echo "<p>There's no match today.</p>";
+                      }
+                      else{
+                        $club1_id = $result['club1'];
+                        $club2_id = $result['club2'];
+                        $schedule = $result['schedule'];
+                        $stadium_id = $result['stadium_id'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club1_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club1 = $newArray['club_name'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club2_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club2 = $newArray['club_name'];
+
+                        $sql = "SELECT name FROM stadium WHERE stadium_id=".$stadium_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $stadium = $newArray['name'];
+
+                        echo "<p> <h3><b>".$club1."</b></h3> vs <h3><b>".$club2." </b></h3></p>";
+                        echo $schedule;
+                        echo " at <b>".$stadium."</b>";
+                        echo "<div class=\"btn-box\">";
+                          echo "<a href=\"#target1\" class=\"btn1\">";
+                          echo "show detail";
+                          echo "</a>";
+                        echo "</div>";  
+                      }
+                    ?>
                   </div>
                 </div>
               </div>
@@ -125,7 +167,18 @@
                       Today's Team
                     </h1>
                     <p>
-                      team1
+                    <?php
+                      $today_number = (idate("Y") + idate("m") + idate("d"));
+                      $player_number = $today_number%7;
+                      
+                      $sql = "SELECT * FROM club WHERE club_id=".$player_number;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                      $club_name = $newArray['club_name'];
+
+                      echo "<h3><b>".$club_name."</b></h3>";
+                    ?>
                     </p>
                     <div class="btn-box">
                       <a href="club.php" class="btn1">
@@ -146,7 +199,26 @@
                       Today's Player
                     </h1>
                     <p>
-                      player1
+                    <?php
+                      $player_number = $today_number%125;
+                      
+                      $sql = "SELECT * FROM player WHERE id=".$player_number;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                      $name = $newArray['name'];
+                      $club_id = $newArray['club_id'];
+                      $uniform_number = $newArray['uniform_number'];
+                      $position = $newArray['position'];
+                      
+                      $sql = "SELECT club_name FROM club WHERE club_id=".$club_id;
+                      $result = mysqli_query($conn, $sql);
+                      $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                      $club_name = $newArray['club_name'];
+
+                      echo "<h3><b>".$name."</b></h3>(".$club_name.", ".$position.", ".$uniform_number.")";
+                    ?>
                     </p>
                     <div class="btn-box">
                       <a href="player.php" class="btn1">
@@ -193,57 +265,107 @@
 
       <div class="filters-content">
         <div class="row grid">
-<!--          {% if(날짜<=현재시간비교한 값 어쩌구..) %}
-            <div class="col-sm-12 col-lg-12 all past">
-          {% else %}
-            <div class="col-sm-12 col-lg-12 all upcoming">
-          {% endif %}
--->          
-          <div class="col-sm-12 col-lg-12 all past">
-            <div class="box">
-              <h5 style="color:#000000">&nbspID: 001</h5>
-              <table style="width:100%">
-                <tr style="text-align:center">
-                  <td>
-                    <h3>Team1</h3>
-                  </td>
-                  <td>
-                    <h5>VS</h5>
-                    <br>
-                    <h4>2021.11.11</h4>
-                    <h4>Stadium</h4>
-                    <h4>Winner</h4>
-                  </td>
-                  <td>
-                    <h3>Team2</h3>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
 
-          <div class="col-sm-12 col-lg-12 all upcoming">
-            <div class="box">
-              <h5 style="color:#000000">&nbspID: 002</h5>
-              <table style="width:100%">
-                <tr style="text-align:center">
-                  <td>
-                    <h3>Team1</h3>
-                  </td>
-                  <td>
-                    <h5>VS</h5>
-                    <br>
-                    <h4>2021.11.11</h4>
-                    <h4>Stadium</h4>
-                    <h4>Winner</h4>
-                  </td>
-                  <td>
-                    <h3>Team2</h3>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+          <?php
+            $sql = "SELECT * FROM game ORDER BY schedule ASC;";
+            
+            $result = mysqli_query($conn, $sql);
+            while($newArray = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+              $game_schedule = $newArray['schedule'];
+              
+              $club1_id = $newArray['club1'];
+              $club2_id = $newArray['club2'];
+              $stadium_id = $newArray['stadium_id'];
+
+              $sql = "SELECT club_name FROM club WHERE club_id=".$club1_id;
+              $res = mysqli_query($conn, $sql);
+              $newArr = mysqli_fetch_array($res, MYSQLI_ASSOC);
+              $club1 = $newArr['club_name']; //club1
+
+              $sql = "SELECT club_name FROM club WHERE club_id=".$club2_id;
+              $res = mysqli_query($conn, $sql);
+              $newArr = mysqli_fetch_array($res, MYSQLI_ASSOC);
+              $club2 = $newArr['club_name']; //club2
+
+              $sql = "SELECT name FROM stadium WHERE stadium_id=".$stadium_id;
+              $res = mysqli_query($conn, $sql);
+              $newArr = mysqli_fetch_array($res, MYSQLI_ASSOC);
+              $stadium = $newArr['name']; //stadium name
+
+              
+              if($game_schedule<$today){
+                $win_club_id = $newArray['winner'];
+                if(!isset($win_club_id)){
+                  $win_club = "not upated yet";
+                }
+                else {
+                  $sql = "SELECT club_name FROM club WHERE club_id=".$win_club_id;
+                  $res = mysqli_query($conn, $sql);
+                  $newArr = mysqli_fetch_array($res, MYSQLI_ASSOC);
+
+                  $win_club = $newArr['club_name'];
+                }
+
+                echo "<div class=\"col-sm-12 col-lg-12 all past\">";
+                  echo "<div class=\"box\">";
+                    echo "<h5 style=\"color:#000000\">&nbsp</h5>";
+                    echo "<table style=\"width:100%\">";
+                      echo "<colgroup>";
+                        echo "<col width=\"33%\"/>";
+                        echo "<col width=\"33%\"/>";
+                        echo "<col width=\"34%\"/>";
+                      echo "</colgroup>";
+                      echo "<tr style=\"text-align:center\">";
+                        echo "<td>";
+                          echo "<h3>".$club1."</h3>";
+                        echo "</td>";
+                        echo "<td>";
+                          echo "<h5>VS</h5>";
+                          echo "<br>";
+                          echo "<h4>".$game_schedule."</h4>";
+                          echo "<h4>".$stadium."</h4>";
+                          echo "<h4>Winner: ".$win_club."</h4>";
+                        echo "</td>";
+                        echo "<td>";
+                          echo "<h3>".$club2."</h3>";
+                        echo "</td>";
+                      echo "</tr>";
+                    echo "</table>";
+                  echo "</div>";
+                echo "</div>";
+              }
+              else{
+                echo "<div class=\"col-sm-12 col-lg-12 all upcoming\">";
+                  echo "<div class=\"box\">";
+                    echo "<h5 style=\"color:#000000\">&nbsp</h5>";
+                      echo "<table style=\"width:100%\">";
+                        echo "<colgroup>";
+                          echo "<col width=\"33%\"/>";
+                          echo "<col width=\"33%\"/>";
+                          echo "<col width=\"34%\"/>";
+                        echo "</colgroup>";
+                        echo "<tr style=\"text-align:center\">";
+                          echo "<td>";
+                            echo "<h3>".$club1."</h3>";
+                          echo "</td>";
+                          echo "<td>";
+                            echo "<h5>VS</h5>";
+                            echo "<br>";
+                            echo "<h4>".$game_schedule."</h4>";
+                            echo "<h4>".$stadium."</h4>";
+                        echo "</td>";
+                        echo "<td>";
+                          echo "<h3>".$club2."</h3>";
+                        echo "</td>";
+                      echo "</tr>";
+                    echo "</table>";
+                  echo "</div>";
+                echo "</div>";
+                echo "";
+                echo "";
+              }
+            }
+          ?>
 
         </div>
       </div>

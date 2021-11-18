@@ -35,8 +35,8 @@
 <body class="sub_page">
 <?php
   session_start();
-  print_r($_SESSION);
-  echo $_SESSION['userid'];
+//  print_r($_SESSION);
+//  echo $_SESSION['userid'];
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -73,8 +73,9 @@
             </ul>
           </div>
 
-          <a class="btn btn-warning" href="update.php"> Update Nickname </a>
-          <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
+          <a class="btn btn-warning" href="login.php"> Sign Out </a>
+          &nbsp;
+          <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           
         </nav>
       </div>
@@ -114,6 +115,7 @@
                 $sql = "SELECT *, rank() over (ORDER BY (win_game/game) desc) AS club_rank FROM club ORDER BY club_rank;"; //승률 계산해서 승률 기준으로 ranking 매김(rank는 club_rank column에 저장됨)
 
                 $result=mysqli_query($conn, $sql);
+
                 while ($newArray = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                   $rank = $newArray['club_rank'];
                   $club_id = $newArray['club_id'];
