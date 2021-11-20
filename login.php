@@ -153,7 +153,7 @@
                     <p>
                     <?php
                       $today_number = (idate("Y") + idate("m") + idate("d"));
-                      $player_number = $today_number%7;
+                      $player_number = ($today_number%7)+1;
                       
                       $sql = "SELECT * FROM club WHERE club_id=".$player_number;
                       $result = mysqli_query($conn, $sql);
@@ -179,7 +179,7 @@
                     </h1>
                     <p>
                     <?php
-                      $player_number = $today_number%125;
+                      $player_number = ($today_number%125)+1;
                       
                       $sql = "SELECT * FROM player WHERE id=".$player_number;
                       $result = mysqli_query($conn, $sql);

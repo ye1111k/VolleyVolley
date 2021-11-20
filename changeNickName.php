@@ -37,6 +37,13 @@
   session_start();
 //  print_r($_SESSION);
 //  echo $_SESSION['userid'];
+
+  $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+  }
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -61,93 +68,68 @@
               <li class="nav-item">
                 <a class="nav-link" href="index.php">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="club.php">Club</a>
+              <li class="nav-item active">
+                <a class="nav-link" href="club.php">Club <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="player.php">Player</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="stadium.php">Stadium<span class="sr-only">(current)</span></a>
+              <li class="nav-item">
+                <a class="nav-link" href="stadium.php">Stadium</a>
               </li>
             </ul>
           </div>
- 
+
           <a class="btn btn-warning" href="login.php"> Sign Out </a>
           &nbsp;
           <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           &nbsp;
           <a class="btn btn-warning" href="changeNickName.php"> change NickName </a>
-
+          
         </nav>
       </div>
     </header>
     <!-- end header section -->
   </div>
 
-  <!-- stadium section -->
-
+  <!-- info section -->
   <br>
   <section class="food_section layout_padding-bottom">
     <div class="container">
       <div class="heading_container heading_center">
-        <h2>
-          Stadium Information
-        </h2>
-      </div>
-
-      <div>
-        <div class="row grid">
-        <?php
-          $mysqli = mysqli_connect("localhost","team22","team22","team22");
-          if (mysqli_connect_errno()) {
-            printf("Connect failed: %s\n", mysqli_connect_error());
-            exit();
-          } else {
-            $sql = "SELECT * FROM stadium";
-            $res = mysqli_query($mysqli, $sql);
-            if ($res) {
-              while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-                $id = $newArray['stadium_id'];
-
-                $name = $newArray['name'];
-                $hometown = $newArray['hometown'];
-                $source = "images/stadium_image/" . (string)$id . ".jpg";
-                echo "<form name=\"frm\" action=\"stadium_info.php\" method=\"POST\">";
-                  echo "<div class=\"col-sm-6 col-lg-4 all\">";
-                    echo "<div class=\"box\">";
-                      echo "<div>";
-                        echo "<div class=\"img-box\">";
-                          echo "<img src=$source alt=\"\">";
-                            echo "</div>";
-                        echo "<div class=\"detail-box\">";
-                          echo "<h6>".$name."</h5>";
-                          echo "<h5>".$hometown."</h5>";
-                          echo "<br>";
-                          echo "<div class=\"options\">";
-                            echo "<input type=\"hidden\" name=\"id\" value=\"$id\">";
-                            echo "<input type=\"submit\" value=\"more details\" class=\"btn btn-warning\" onclick=\"javascript:document.frm.submit();\">";
-                            echo "<br>";
-                          echo "</div>";
-                        echo "</div>";
-                      echo "</div>";
-                    echo "</div>";
-                  echo "</div>";
-                echo "</form>";
-              }
-            } 
-            else {
-              printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
-            }
-            mysqli_free_result($res);
-            mysqli_close($mysqli);
-          }
-        ?>
+        <div id="target1">
+          <h3>
+            Change your NickName
+          </h3>
+          <div class="club">
+          Current Your NickName is 
+          <?php
+            echo "<b>".$_SESSION["username"].".</b>";
+          ?>  
+          <br>
+          <br>
+          <br>
+          You can change your nickname to 
+          <div class="form_container">
+            <form action="./updateNickName.php" method="POST" onsubmit="return checkSubmit()">
+              <div>
+                <input type="text" class="form-control" placeholder="NickName" name="uNickName" id="uNickName"/>
+              </div>
+              <div class="btn_box">
+              <br>
+                <button type="submit" class="btn btn-warning">
+                  Change
+                </button>
+              </div>
+            </form>
+          </div>
+          </div>
         </div>
       </div>
+    </div>
   </section>
 
-  <!-- end stadium section -->
+  <!-- end info section -->
 
   <!-- footer section -->
   <footer class="footer_section">
@@ -195,7 +177,23 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
-
+  <script>
+    function checkSubmit(){
+    var uNickName = document.getElementById("uNickName");
+    
+    if(userId.value.length == 0){
+      alert('please enter new NickName');
+      return false;
+    }
+    
+    return true;
+    }
+    //if ('addEventListener' in window) {
+      //window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+      //document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    //}
+    
+  </script>
 </body>
 
 </html>

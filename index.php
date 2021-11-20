@@ -93,6 +93,8 @@
           <a class="btn btn-warning" href="login.php"> Sign Out </a>
           &nbsp;
           <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
+          &nbsp;
+          <a class="btn btn-warning" href="changeNickName.php"> change NickName </a>
             
           </div>
         </nav>
@@ -113,8 +115,6 @@
                     </h1>
                     <?php
                       $today=date("Y-m-d");
-
-                      echo $today;
 
                       $sql = "SELECT * FROM game WHERE date(schedule) = date(now());";
                       $result=mysqli_fetch_array(mysqli_query($conn, $sql));
@@ -169,7 +169,7 @@
                     <p>
                     <?php
                       $today_number = (idate("Y") + idate("m") + idate("d"));
-                      $player_number = $today_number%7;
+                      $player_number = ($today_number%7)+1;
                       
                       $sql = "SELECT * FROM club WHERE club_id=".$player_number;
                       $result = mysqli_query($conn, $sql);
@@ -200,7 +200,7 @@
                     </h1>
                     <p>
                     <?php
-                      $player_number = $today_number%125;
+                      $player_number = ($today_number%125)+1;
                       
                       $sql = "SELECT * FROM player WHERE id=".$player_number;
                       $result = mysqli_query($conn, $sql);
@@ -254,6 +254,8 @@
         <h2>
           Game Schedule
         </h2>
+        &nbsp;
+        <a class="btn btn-warning" href="addMatch.php"> Add Match </a>
       </div>
       </div>
 
@@ -276,6 +278,7 @@
               $club1_id = $newArray['club1'];
               $club2_id = $newArray['club2'];
               $stadium_id = $newArray['stadium_id'];
+              $game_id = $newArray['id'];
 
               $sql = "SELECT club_name FROM club WHERE club_id=".$club1_id;
               $res = mysqli_query($conn, $sql);
@@ -297,6 +300,7 @@
                 $win_club_id = $newArray['winner'];
                 if(!isset($win_club_id)){
                   $win_club = "not upated yet";
+                  
                 }
                 else {
                   $sql = "SELECT club_name FROM club WHERE club_id=".$win_club_id;
@@ -305,7 +309,6 @@
 
                   $win_club = $newArr['club_name'];
                 }
-
                 echo "<div class=\"col-sm-12 col-lg-12 all past\">";
                   echo "<div class=\"box\">";
                     echo "<h5 style=\"color:#000000\">&nbsp</h5>";
@@ -333,8 +336,10 @@
                     echo "</table>";
                   echo "</div>";
                 echo "</div>";
+                
               }
               else{
+
                 echo "<div class=\"col-sm-12 col-lg-12 all upcoming\">";
                   echo "<div class=\"box\">";
                     echo "<h5 style=\"color:#000000\">&nbsp</h5>";
@@ -353,12 +358,36 @@
                             echo "<br>";
                             echo "<h4>".$game_schedule."</h4>";
                             echo "<h4>".$stadium."</h4>";
-                        echo "</td>";
-                        echo "<td>";
-                          echo "<h3>".$club2."</h3>";
-                        echo "</td>";
+                          echo "</td>";
+                          echo "<td>";
+                            echo "<h3>".$club2."</h3>";
+                          echo "</td>";
+                        echo "</tr>";
+                        echo "<tr>";
+                          echo "<td><br></td>";
+                          echo "<td style=\"float:right\">";
+                            echo "<form name=\"frm\" action=\"gamE_info.php\" method=\"POST\">";
+                            echo "<input type=\"hidden\" name=\"game_id\" value=\"$game_id\">";
+                            echo "<input type=\"submit\" value =\"Update\" class=\"btn btn-warning\">";
+                             echo "</form>";
+                          echo "</td>";
+                          echo "<td style=\"padding-right:10px\">";
+
+                              echo "<form name=\"frm\" action=\"gameDelete.php\" method=\"POST\">";
+                              echo "<input type=\"hidden\" name=\"game_id\" value=\"$game_id\">";
+                              echo "<input type=\"submit\" value =\"Delete\" class=\"btn btn-warning\">";
+                            echo "</form>";
+
+
+      //                      echo "<button type=\"button\" onclick=\"location.href='./game_info.php';\">";
+      //                     echo "Update";
+        //                   echo "</button>";
+                                
+                              
+                              echo "</td>";
                       echo "</tr>";
                     echo "</table>";
+                  
                   echo "</div>";
                 echo "</div>";
                 echo "";

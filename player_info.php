@@ -76,6 +76,8 @@
           <a class="btn btn-warning" href="signOut.php"> Sign Out </a>
           &nbsp;
           <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
+          &nbsp;
+          <a class="btn btn-warning" href="changeNickName.php"> change NickName </a>
           
         </nav>
       </div>

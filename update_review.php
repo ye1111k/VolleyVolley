@@ -45,7 +45,6 @@
     printf("Connect failed: %s\n",mysqli_connect_error());
     exit();
   }
-  $stadium_id=$_REQUEST['id'];
   //echo $_REQUEST['id'];
 ?>
   <div class="hero_area">
@@ -112,7 +111,7 @@
               <div>
                   <?php
                     
-                      $sql="select * from stadium where stadium_id=" . $_REQUEST['id'];
+                      $sql="select * from stadium where stadium_id=" . $_REQUEST['stadium_id'];
                       $res = mysqli_query($mysqli, $sql);
                       if ($res) {
                         while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
@@ -144,10 +143,10 @@
                     <div class="wrapper">
                       <?php
                         
-                          $sql="select * from public_transport where stadium_id=" . $_REQUEST['id'];
+                          $sql="select * from public_transport where stadium_id=" . $_REQUEST['stadium_id'];
                           $res = mysqli_query($mysqli, $sql);
                           if ($res) {
-                            $sql2 = "select min(distance_stadium) from public_transport where stadium_id=" . $_REQUEST['id'];
+                            $sql2 = "select min(distance_stadium) from public_transport where stadium_id=" . $_REQUEST['stadium_id'];
                             $res2 = mysqli_query($mysqli, $sql2);
 
                             while($min_distance = mysqli_fetch_array($res2, MYSQLI_ASSOC)){
@@ -200,7 +199,7 @@
                     <div class="wrapper2">
                       <?php
                           
-                            $sql="select * from restaurant where stadium=" . $_REQUEST['id'];
+                            $sql="select * from restaurant where stadium=" . $_REQUEST['stadium_id'];
                             $res = mysqli_query($mysqli, $sql);
                             if ($res) {
                               $num = 0;
@@ -231,10 +230,10 @@
 
         <div class="club">
             <div>
-              <h4>&emsp; stadium review </h3>
+              <h4>&emsp; Update review </h3>
               <?php
                 
-                  $sql="select avg(star_num) from review where stadium_id=" . $_REQUEST['id'];
+                  $sql="select avg(star_num) from review where stadium_id=" . $_REQUEST['stadium_id'];
                   $res = mysqli_query($mysqli, $sql);
                   if ($res) {
                     while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
@@ -246,77 +245,24 @@
                     printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
                   }
                   mysqli_free_result($res);
+                  mysqli_close($mysqli);
               ?>
               
-              <form action="./review.php" method="POST" onsubmit="return checkSubmit()">
+              <form action="./update_review_register.php" method="POST" onsubmit="return checkSubmit()">
                 <div class="write">
                   <span class="star">
                     ★★★★★
                     <span>★★★★★</span>
                     <input type="range" name="star" oninput="drawStar(this)" value="1" step="1" min="0" max="10">
                   </span>
-                  <input type="text" class="form-control" placeholder="write a review" name="rv"/>
+                  <input type="text" class="form-control" placeholder="update" name="rv"/>
                   <?php
-                    echo "<input type=\"hidden\" name=\"id\" value=".$id.">";
+                    $review_id=$_REQUEST['review_id'];
+                    echo "<input type=\"hidden\" name=\"id\" value=".$review_id.">";
                   ?>
                   <input type="submit" value="register" class="btn btn-warning" style="margin-top: 10px">
                 </div>
               </form>
-
-              <?php
-                  $mysqli = mysqli_connect("localhost","team22","team22","team22");
-                  
-                    $sql="select * from review where stadium_id=" . $_REQUEST['id'];
-                    $res = mysqli_query($mysqli, $sql);
-                    if ($res) {
-                      while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-                        $review_id = $newArray['review_id'];
-                        $id = $newArray['user_id'];
-                        $name = $newArray['user_nickName'];
-                        $date = $newArray['date'];
-                        $star = $newArray['star_num'];
-                        $content = $newArray['content'];
-                        echo "<div class=\"review_list\">";
-                          echo "<table width=\"100%\">";
-                            echo "<colgroup>";
-                              echo "<col width=\"20%\"/>";
-                              echo "<col width=\"50%\"/>";
-                              echo "<col width=\"10%\"/>";
-                              echo "<col width=\"10%\"/>";
-                              echo "<col width=\"10%\"/>";
-                            echo "</colgroup>";
-                            echo "<tr>";
-                              echo "<td>".$name."</td>";
-                              echo "<td>".$date."</td>";
-                              echo "<td style=\"float:right;\">★".$star."</td>";
-
-                              if ($_SESSION['userid']==$id){
-                                echo "<form name=\"frm\" action=\"update_review.php\" method=\"POST\">";
-                                  echo "<input type=\"hidden\" name=\"stadium_id\" value=\"$stadium_id\">";
-                                  echo "<input type=\"hidden\" name=\"review_id\" value=\"$review_id\">";
-                                  echo "<td><input type=\"submit\" value=\"update\" class=\"btn btn-warning\"></td>";
-                                echo "</form>";
-
-                                echo "<form name=\"frm\" action=\"delete_review.php\" method=\"POST\">";
-                                  echo "<input type=\"hidden\" name=\"id\" value=\"$review_id\">";
-                                  echo "<td><input type=\"submit\" value=\"delete\" class=\"btn btn-warning\"></td>";
-                                echo "</form>";
-                              }
-                            echo "</tr>";
-                            echo "<tr>";
-                              echo "<td colspan = \"3\">".$content."</td>";
-                            echo "</tr>";
-                          echo "</table>";
-                        echo "</div>";
-                      }
-                    }
-                    else {
-                      printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
-                    }
-                    mysqli_free_result($res);
-                    mysqli_close($mysqli);
-                  
-              ?>
             </div>
         </div>
 

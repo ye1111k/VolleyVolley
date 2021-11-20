@@ -37,6 +37,13 @@
   session_start();
 //  print_r($_SESSION);
 //  echo $_SESSION['userid'];
+
+  $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+
+  if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+  }
 ?>
   <div class="hero_area">
     <div class="bg-box">
@@ -61,93 +68,97 @@
               <li class="nav-item">
                 <a class="nav-link" href="index.php">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="club.php">Club</a>
+              <li class="nav-item active">
+                <a class="nav-link" href="club.php">Club <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="player.php">Player</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="stadium.php">Stadium<span class="sr-only">(current)</span></a>
+              <li class="nav-item">
+                <a class="nav-link" href="stadium.php">Stadium</a>
               </li>
             </ul>
           </div>
- 
+
           <a class="btn btn-warning" href="login.php"> Sign Out </a>
           &nbsp;
           <a class="btn btn-warning" href="withdraw.php"> Withdraw </a>
           &nbsp;
           <a class="btn btn-warning" href="changeNickName.php"> change NickName </a>
-
+          
         </nav>
       </div>
     </header>
     <!-- end header section -->
   </div>
 
-  <!-- stadium section -->
-
+  <!-- info section -->
   <br>
   <section class="food_section layout_padding-bottom">
     <div class="container">
       <div class="heading_container heading_center">
-        <h2>
-          Stadium Information
-        </h2>
-      </div>
+        <div id="target1">
+          <h2>
+            Update Result
+          </h2>
+          <br>
+            <div>
 
-      <div>
-        <div class="row grid">
-        <?php
-          $mysqli = mysqli_connect("localhost","team22","team22","team22");
-          if (mysqli_connect_errno()) {
-            printf("Connect failed: %s\n", mysqli_connect_error());
-            exit();
-          } else {
-            $sql = "SELECT * FROM stadium";
-            $res = mysqli_query($mysqli, $sql);
-            if ($res) {
-              while ($newArray = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
-                $id = $newArray['stadium_id'];
+            <?php
+              $game_id=$_POST['game_id']; //id 받아올 변수
 
-                $name = $newArray['name'];
-                $hometown = $newArray['hometown'];
-                $source = "images/stadium_image/" . (string)$id . ".jpg";
-                echo "<form name=\"frm\" action=\"stadium_info.php\" method=\"POST\">";
-                  echo "<div class=\"col-sm-6 col-lg-4 all\">";
-                    echo "<div class=\"box\">";
-                      echo "<div>";
-                        echo "<div class=\"img-box\">";
-                          echo "<img src=$source alt=\"\">";
-                            echo "</div>";
-                        echo "<div class=\"detail-box\">";
-                          echo "<h6>".$name."</h5>";
-                          echo "<h5>".$hometown."</h5>";
-                          echo "<br>";
-                          echo "<div class=\"options\">";
-                            echo "<input type=\"hidden\" name=\"id\" value=\"$id\">";
-                            echo "<input type=\"submit\" value=\"more details\" class=\"btn btn-warning\" onclick=\"javascript:document.frm.submit();\">";
-                            echo "<br>";
-                          echo "</div>";
-                        echo "</div>";
-                      echo "</div>";
-                    echo "</div>";
-                  echo "</div>";
-                echo "</form>";
+              $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+              
+              $sql="select * from game WHERE id=".$game_id;
+              $result=mysqli_query($conn, $sql);
+              
+              $club_array=["GS Caltex Seoul KIXX", "IBK Altos", "KGC Pro Volleyball Club", 
+              "AI Peppers", "Heungkuk Life Insurance Pink Spiders",
+              "Korea Expressway Corporation Hi-Pass", "HDEC Hillstate"];
+              if ($result==TRUE){
+                while($newArray = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+                  $club1=$newArray['club1'];
+                  $club2=$newArray['club2']; 
+                }
+                echo "<H3>".$club_array[$club1-1]."</H3>";
+                echo "<H3> VS </H3>";
+                echo "<H3>".$club_array[$club2-1]."</H3>";
+
               }
-            } 
-            else {
-              printf("Could not retrieve records: %s\n",mysqli_error($mysqli));
-            }
-            mysqli_free_result($res);
-            mysqli_close($mysqli);
-          }
-        ?>
+              mysqli_close($conn);
+
+            ?>
+
+<br>
+<br>
+            <H5> update game result: winner </H5>
+            <form action="./gameUpdate.php" method="POST">
+                <select name="winner" id="winner">
+                    <option value=1>GS Caltex Seoul KIXX</option>
+                    <option value=2>IBK Altos</option>
+                    <option value=3>KGC Pro Volleyball Club</option>
+                    <option value=4>AI Peppers</option>
+                    <option value=5>Heungkuk Life Insurance Pink Spiders</option>
+                    <option value=6>Korea Expressway Corporation Hi-Pass</option>
+                    <option value=7>HDEC Hillstate</option>
+                </select>
+
+              <?php
+              echo "<input type=\"hidden\" name=\"game_id\" value=\"$game_id\">";
+              echo "<input type=\"hidden\" name=\"club1\" value=\"$club1\">";
+              echo "<input type=\"hidden\" name=\"club2\" value=\"$club2\">";
+              ?>
+              <input type="submit" value="update" class="btn btn-warning"/>
+            </form>
+        </form>
+          </div>
+          </div>
         </div>
       </div>
+    </div>
   </section>
 
-  <!-- end stadium section -->
+  <!-- end info section -->
 
   <!-- footer section -->
   <footer class="footer_section">
@@ -195,7 +206,23 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
-
+  <script>
+    function checkSubmit(){
+    var uNickName = document.getElementById("uNickName");
+    
+    if(userId.value.length == 0){
+      alert('please enter new NickName');
+      return false;
+    }
+    
+    return true;
+    }
+    //if ('addEventListener' in window) {
+      //window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+      //document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    //}
+    
+  </script>
 </body>
 
 </html>

@@ -107,7 +107,41 @@
                                 Today's Match
                             </h1>
                             <p>
-                                team1 vs team2
+                            <?php
+                      $conn=mysqli_connect('localhost', 'team22', 'team22', 'team22'); //db 연결
+
+                      if (mysqli_connect_errno()) {
+                        printf("Connect failed: %s\n", mysqli_connect_error());
+                        exit();
+                      }
+                    
+                      $today=date("Y-m-d");
+
+                      $sql = "SELECT * FROM game WHERE date(schedule) = date(now());";
+                      $result=mysqli_fetch_array(mysqli_query($conn, $sql));
+
+                      if($result==FALSE){
+                        echo "<p>There's no match today.</p>";
+                      }
+                      else{
+                        $club1_id = $result['club1'];
+                        $club2_id = $result['club2'];
+                        $schedule = $result['schedule'];
+                        $stadium_id = $result['stadium_id'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club1_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club1 = $newArray['club_name'];
+
+                        $sql = "SELECT club_name FROM club WHERE club_id=".$club2_id;
+                        $result = mysqli_query($conn, $sql);
+                        $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                        $club2 = $newArray['club_name'];
+
+                        echo "<p> <h3><b>".$club1."</b></h3> vs <h3><b>".$club2." </b></h3></p>";
+                      }
+                    ?>
                             </p>
                             </div>
                         </div>
@@ -123,7 +157,18 @@
                                 Today's Team
                             </h1>
                             <p>
-                                team1
+                            <?php
+                              $today_number = (idate("Y") + idate("m") + idate("d"));
+                              $player_number = ($today_number%7)+1;
+                      
+                              $sql = "SELECT * FROM club WHERE club_id=".$player_number;
+                              $result = mysqli_query($conn, $sql);
+                              $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                              $club_name = $newArray['club_name'];
+
+                              echo "<h3><b>".$club_name."</b></h3>";
+                            ?>
                             </p>
                             </div>
                         </div>
@@ -139,7 +184,26 @@
                                 Today's Player
                             </h1>
                             <p>
-                                player1
+                            <?php
+                              $player_number = ($today_number%125)+1;
+                      
+                              $sql = "SELECT * FROM player WHERE id=".$player_number;
+                              $result = mysqli_query($conn, $sql);
+                              $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                      
+                              $name = $newArray['name'];
+                              $club_id = $newArray['club_id'];
+                              $uniform_number = $newArray['uniform_number'];
+                              $position = $newArray['position'];
+                      
+                              $sql = "SELECT club_name FROM club WHERE club_id=".$club_id;
+                              $result = mysqli_query($conn, $sql);
+                              $newArray = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+                              $club_name = $newArray['club_name'];
+
+                              echo "<h3><b>".$name."</b></h3>(".$club_name.", ".$position.", ".$uniform_number.")";
+                            ?>
                             </p>
                             </div>
                         </div>

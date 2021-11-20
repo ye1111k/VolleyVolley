@@ -16,8 +16,7 @@
         </script>');
     }
     
-    $sql = "INSERT INTO personal_info (user_id, password, name) 
-            VALUES('$uid', '$pwd', '$name')";
+    $sql = "INSERT INTO personal_info (user_id, password, name) VALUES('$uid', '$pwd', '$name')";
     $result = mysqli_query($conn, $sql);
 
     if ($result === false) {
